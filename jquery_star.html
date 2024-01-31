@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./css/bootstrap.min.css">
+  <title>星星評分</title>
+  <style>
+    #star-bar{
+      width: 100%;
+    }
+    .star{
+      display: inline-block;
+      height: 128px;
+      width: 128px;
+      background-image: url(./images/star.gif);
+    }
+    .star.filled, .star.fixed{
+      background-image: url(./images/chngstar.gif);
+    }
+    #rating{
+      font-weight: bold;
+      font-size: 20px;
+      color: red;
+    }
+    #response{
+      font-weight: bold;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1 class="text-center fw-bold mt-5">來評分吧</h1>
+  <div id="star-bar" class="mt-5 d-flex justify-content-center">
+    <span class="star"></span>
+    <span class="star"></span>
+    <span class="star"></span>
+    <span class="star"></span>
+    <span class="star"></span>
+  </div>
+  <p class="text-center fw-bold mt-5">您給出<span id="rating"></span><span id="empty">&nbsp;&nbsp;&nbsp;</span>星評價</p>
+  <div class="d-flex justify-content-center">
+  <button type="button" class="btn btn-primary ms-5 me-5" id="reset" value="重新評分">重新評分</button>
+  <button type="button" class="btn btn-primary ms-5 me-5" id="submit" value="送出評分">送出評分</button>
+  </div>
+
+  <p class="text-center mt-5" id="response"></p>
+  <script src="./js/bootstrap.bundle.min.js"></script>
+  <script src="./js/code.jquery.com_jquery-3.7.1.min.js"></script>
+  <script>
+    $(document).ready(function(){
+      //設定星星點擊後，星星本身和前面的會亮起，後面的不會亮
+      $(".star").click(function(){
+        $(this).addClass("fixed");
+        $(this).prevAll(".star").addClass("fixed");
+        $(this).nextAll(".star").removeClass("fixed");
+      })
+      //設定滑鼠移至星星時，星星本身和前面的會亮起
+      $(".star").mouseover(function() {
+        $(this).addClass("filled");
+        $(this).prevAll(".star").addClass("filled");
+      })
+      //設定滑鼠離開星星時，星星本身和前面的回歸不會亮的狀態
+      $(".star").mouseout(function() {
+        $(this).removeClass("filled");
+        $(this).prevAll(".star").removeClass("filled");
+      });
+      //設定星星的分數並將分數的數字取代原先的空白(原先的空白隱藏)
+      $(".star").click(function(){
+        score = $(this).index()+1;
+        $("#rating").text(score);
+        $("#empty").hide();
+      })
+      //設定點擊重新評分的按鈕後，所有星星回歸不會亮的狀態、評分分數改回"空白"、原先的空白顯現、原先評分後的回應改回"空白"
+      $("#reset").click(function(){
+        $(".star").removeClass("fixed");
+        $("#rating").text("");
+        $("#empty").show();
+        $("#response").text("");
+      })
+      //設定不同星星數給予的回應，星星數初始值為0
+      let rating = 0
+      $("#submit").on("click",function(){
+        let rating = $("#rating").text()
+        if(rating == 0){
+          alert("您尚未評分！");
+        }
+        if(rating == 1){
+          $("#response").text("謝謝您的評分，很抱歉讓您有了不好的體驗...請務必提供您寶貴的建議以幫助我們改善！")
+        }
+        if(rating == 2){
+          $("#response").text("謝謝您的評分，請務必提供您寶貴的建議以幫助我們改善！")
+        }
+        if(rating == 3){
+          $("#response").text("謝謝您的評分，請給予我們您寶貴的建議以幫助我們改善！")
+        }
+        if(rating == 4){
+          $("#response").text("謝謝您的評分，請給予我們您寶貴的建議以幫助我們提供更完善的服務！")
+        }
+        if(rating == 5){
+          $("#response").text("謝謝您給予我們滿星評價！期待您再次光臨！")
+        }
+        //送出評分後，不得再次評分:去除所有星星的滑鼠事件、關閉重新評分和送出評分的按鈕
+        $(".star").off("mouseover").off("click").off("mouseout");
+        $("#reset,#submit").attr("disabled",true);
+      });
+    })
+    
+    
+  </script>
+  
+  
+</body>
+</html>
